@@ -147,9 +147,6 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
                 isLoading = false;
                 page--;
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Failed to load more items')),
-              );
             }
             if (state is AcceptDeclinePickerSuccessState) {
               setState(() {
@@ -285,6 +282,8 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
                                                       CustomerTrackingScreen(
                                                         activePickerModel:
                                                             picker,
+                                                        customerId:
+                                                            picker.id ?? "",
                                                       ),
                                                     );
                                                   },

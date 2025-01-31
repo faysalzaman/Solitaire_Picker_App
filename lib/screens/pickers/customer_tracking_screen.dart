@@ -3,25 +3,31 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:solitaire_picker/cubit/journey/journey_cubit.dart';
+import 'package:solitaire_picker/cubit/journey/journey_state.dart';
 import 'package:solitaire_picker/model/active_picker_model.dart';
 import 'dart:convert';
 
 import 'package:solitaire_picker/screens/pickers/shops/select_shop_screen.dart';
 import 'package:solitaire_picker/utils/app_loading.dart';
+import 'package:solitaire_picker/utils/app_navigator.dart';
 
 class CustomerTrackingScreen extends StatefulWidget {
   const CustomerTrackingScreen({
     super.key,
     required this.activePickerModel,
+    required this.customerId,
   });
 
   final ActivePickerModel activePickerModel;
+  final String customerId;
 
   @override
   State<CustomerTrackingScreen> createState() => _CustomerTrackingScreenState();
@@ -441,42 +447,72 @@ class _CustomerTrackingScreenState extends State<CustomerTrackingScreen> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Align(
-                              alignment: Alignment.center,
-                              child: FilledButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        backgroundColor: Colors.white,
-                                        title:
-                                            const Text('Congratulations! 🎉'),
-                                        content: Text(
-                                          'You have successfully met up with ${widget.activePickerModel.customer?.name}. You can now proceed with your shopping or continue with your services.',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PickerTransactionScreen(
-                                                    activePickerModel: widget
-                                                        .activePickerModel,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: const Text('Let\'s go!'),
-                                          ),
-                                        ],
+                            BlocConsumer<JourneyCubit, JourneyState>(
+                              listener: (context, state) {
+                                if (state is JourneyLoaded) {
+                                  Navigator.pop(context);
+                                  AppNavigator.push(
+                                    context,
+                                    SelectShopScreen(
+                                      activePickerModel:
+                                          widget.activePickerModel,
+                                      customerId: widget.customerId,
+                                      journeyId: state.journey.id ?? "",
+                                    ),
+                                  );
+                                } else if (state is JourneyError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.message),
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                return Align(
+                                  alignment: Alignment.center,
+                                  child: FilledButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.white,
+                                            title: const Text(
+                                                'Congratulations! 🎉'),
+                                            content: Text(
+                                              'You have successfully met up with ${widget.activePickerModel.customer?.name}. You can now proceed with your shopping or continue with your services.',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  context
+                                                      .read<JourneyCubit>()
+                                                      .startJourney(
+                                                          widget.customerId);
+                                                },
+                                                child: state is JourneyLoading
+                                                    ? const AppLoading(
+                                                        color: Colors.blue,
+                                                        size: 16,
+                                                      )
+                                                    : const Text('Let\'s go!'),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
-                                child: const Text('Meet Customer'),
-                              ),
+                                    child: state is JourneyLoading
+                                        ? const AppLoading(
+                                            color: Colors.blue,
+                                            size: 16,
+                                          )
+                                        : const Text('Meet Customer'),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),

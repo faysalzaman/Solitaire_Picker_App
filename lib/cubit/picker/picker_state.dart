@@ -27,3 +27,13 @@ class PickerReviewErrorState extends PickerState {
 
   PickerReviewErrorState(this.message);
 }
+
+class AcceptDeclinePickerLoadingState extends PickerState {}
+
+class AcceptDeclinePickerSuccessState extends PickerState {}
+
+class AcceptDeclinePickerErrorState extends PickerState {
+  final String message;
+
+  AcceptDeclinePickerErrorState(this.message);
+}

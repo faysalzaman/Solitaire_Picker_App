@@ -252,6 +252,16 @@ class _LoginScreenState extends State<LoginScreen>
             _showWarningMessage(state.message);
           } else if (state is LoginWithFingerprintError) {
             _showWarningMessage(state.message.replaceAll('Exception: ', ''));
+          } else if (state is LoginWithFingerprintLoading) {
+            showDialog(
+              context: context,
+              builder: (context) => const Center(
+                child: AppLoading(
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            );
           } else if (state is LoginWithFingerprintSuccess) {
             Navigator.pop(context); // Close dialog
             AppNavigator.pushReplacement(context, const DashboardScreen());

@@ -11,6 +11,7 @@ class PickerCubit extends Cubit<PickerState> {
   final PickerController _pickerController = PickerController();
 
   List<ActivePickerModel> pickers = [];
+  bool hasMoreData = true;
 
   static PickerCubit get(BuildContext context) => BlocProvider.of(context);
 
@@ -23,8 +24,15 @@ class PickerCubit extends Cubit<PickerState> {
         emit(PickerErrorState('No internet connection'));
         return;
       }
-      final pickers = await _pickerController.getPickers(page, limit);
-      this.pickers = pickers;
+      final newPickers = await _pickerController.getPickers(page, limit);
+      if (newPickers.isEmpty) {
+        hasMoreData = false;
+      } else {
+        if (page == 1) {
+          pickers.clear();
+        }
+        pickers.addAll(newPickers);
+      }
       emit(PickerSuccessState(pickers));
     } catch (error) {
       emit(PickerErrorState(error.toString()));
@@ -46,6 +54,22 @@ class PickerCubit extends Cubit<PickerState> {
       getPickers(1, 10);
     } catch (error) {
       emit(PickerReviewErrorState(error.toString()));
+    }
+  }
+
+  Future<void> acceptDeclinePicker(String requestId, bool accept) async {
+    emit(AcceptDeclinePickerLoadingState());
+    try {
+      final connectivityResult = await Connectivity().checkConnectivity();
+
+      if (connectivityResult == ConnectivityResult.none) {
+        emit(AcceptDeclinePickerErrorState('No internet connection'));
+        return;
+      }
+      await _pickerController.acceptDeclinePicker(requestId, accept);
+      emit(AcceptDeclinePickerSuccessState());
+    } catch (error) {
+      emit(AcceptDeclinePickerErrorState(error.toString()));
     }
   }
 }

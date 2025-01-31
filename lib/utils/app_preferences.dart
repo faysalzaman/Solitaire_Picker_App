@@ -60,8 +60,9 @@ class AppPreferences {
     return await _preferences.setString(_keyStatus, status ?? '');
   }
 
-  static Future<bool> setAvgRating(double? avgRating) async {
-    return await _preferences.setDouble(_keyAvgRating, avgRating ?? 0);
+  static Future<bool> setAvgRating(num? avgRating) async {
+    return await _preferences.setDouble(
+        _keyAvgRating, avgRating?.toDouble() ?? 0);
   }
 
   // Individual getters
@@ -74,7 +75,7 @@ class AppPreferences {
   static bool? getHasFingerprint() => _preferences.getBool(_keyHasFingerprint);
   static num? getCurrentBalance() => _preferences.getDouble(_keyCurrentBalance);
   static String? getStatus() => _preferences.getString(_keyStatus);
-  static double? getAvgRating() => _preferences.getDouble(_keyAvgRating);
+  static num? getAvgRating() => _preferences.getDouble(_keyAvgRating);
 
   // Clear all user data
   static Future<bool> clearUserData() async {

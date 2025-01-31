@@ -22,6 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(LoginError('No internet connection'));
       }
     } catch (e) {
+      print(e);
       emit(LoginError(e.toString()));
     }
   }

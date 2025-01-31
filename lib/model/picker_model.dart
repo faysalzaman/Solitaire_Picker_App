@@ -6,7 +6,7 @@ class PickerModel {
   String? password;
   String? address;
   String? avatar;
-  double? avgRating;
+  num? avgRating;
   String? status;
   bool? isActive;
   String? createdAt;

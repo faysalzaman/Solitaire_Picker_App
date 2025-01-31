@@ -6,7 +6,7 @@ class UserModel {
   String? address;
   String? avatar;
   String? status;
-  double? avgRating;
+  num? avgRating;
   bool? isActive;
   bool? hasFingerprint;
   bool? hasNfcCard;
@@ -14,21 +14,22 @@ class UserModel {
   String? createdAt;
   String? token;
 
-  UserModel(
-      {this.id,
-      this.name,
-      this.email,
-      this.phone,
-      this.address,
-      this.avatar,
-      this.status,
-      this.avgRating,
-      this.isActive,
-      this.hasFingerprint,
-      this.hasNfcCard,
-      this.updatedAt,
-      this.createdAt,
-      this.token});
+  UserModel({
+    this.id,
+    this.name,
+    this.email,
+    this.phone,
+    this.address,
+    this.avatar,
+    this.status,
+    this.avgRating,
+    this.isActive,
+    this.hasFingerprint,
+    this.hasNfcCard,
+    this.updatedAt,
+    this.createdAt,
+    this.token,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

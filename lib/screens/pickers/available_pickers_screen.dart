@@ -5,6 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solitaire_picker/constants/constant.dart';
 import 'package:solitaire_picker/cubit/picker/picker_cubit.dart';
 import 'package:solitaire_picker/cubit/picker/picker_state.dart';
+import 'package:shimmer/shimmer.dart';
+import 'dart:async';
+import 'package:solitaire_picker/screens/pickers/customer_tracking_screen.dart';
+import 'package:solitaire_picker/utils/app_loading.dart';
+import 'package:solitaire_picker/utils/app_navigator.dart';
 
 class AvailablePickersScreen extends StatefulWidget {
   const AvailablePickersScreen({super.key});
@@ -15,6 +20,7 @@ class AvailablePickersScreen extends StatefulWidget {
 
 class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
   final ScrollController _scrollController = ScrollController();
+  Timer? _refreshTimer;
   int page = 1;
   int limit = 10;
   bool isLoading = false;
@@ -24,24 +30,103 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
     super.initState();
     context.read<PickerCubit>().getPickers(page, limit);
     _scrollController.addListener(_onScroll);
+
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted) {
+        setState(() {
+          page = 1;
+          context.read<PickerCubit>().pickers.clear();
+          context.read<PickerCubit>().getPickers(page, limit);
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _refreshTimer?.cancel();
+
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !isLoading) {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.95 &&
+        !isLoading &&
+        context.read<PickerCubit>().hasMoreData) {
       setState(() {
         isLoading = true;
       });
       page++;
       context.read<PickerCubit>().getPickers(page, limit);
     }
+  }
+
+  Widget _buildLoadingShimmer() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Column(
+              children: List.generate(
+                5,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 90,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -62,6 +147,24 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
                 isLoading = false;
                 page--;
               });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to load more items')),
+              );
+            }
+            if (state is AcceptDeclinePickerSuccessState) {
+              setState(() {
+                isLoading = false;
+              });
+              context.read<PickerCubit>().getPickers(page, limit);
+            }
+            if (state is AcceptDeclinePickerErrorState) {
+              setState(() {
+                isLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Failed to accept/decline picker')),
+              );
             }
           },
           builder: (context, state) {
@@ -88,114 +191,169 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Back Button and Title Row
-                        const Text(
-                          'Available Requests',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.purpleColor,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        // Title and Refresh Button Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Available Requests',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.purpleColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.refresh,
+                                  color: AppColors.purpleColor),
+                              onPressed: () {
+                                setState(() {
+                                  page = 1;
+                                  context.read<PickerCubit>().pickers.clear();
+                                  context
+                                      .read<PickerCubit>()
+                                      .getPickers(page, limit);
+                                });
+                              },
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
 
-                        // List of Orders
-                        ...pickers
-                            .map((picker) => Container(
-                                  margin: const EdgeInsets.only(bottom: 16),
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildDetailRow(
-                                          'Status', '${picker.status}'),
-                                      _buildDetailRow('Customer Name',
-                                          '${picker.customer?.name}'),
-                                      _buildDetailRow(
-                                          'Phone', '${picker.customer?.phone}'),
-                                      _buildDetailRow(
-                                          'Location', '${picker.location}'),
-                                      _buildDetailRow('Coordinates',
-                                          '${picker.customerLat}, ${picker.customerLng}'),
-                                      _buildDetailRow('Requested At',
-                                          '${picker.createdAt}'),
-
-                                      const SizedBox(height: 16),
-                                      // Action Buttons
-
-                                      if (picker.status == 'ACCEPTED')
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              '${picker.status}',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
+                        // Show shimmer loading when in initial or loading state
+                        if (state is PickerInitialState ||
+                            (state is PickerLoadingState && pickers.isEmpty))
+                          _buildLoadingShimmer()
+                        else
+                          ...pickers
+                              .map((picker) => Container(
+                                    margin: const EdgeInsets.only(bottom: 16),
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
                                         ),
-                                      Visibility(
-                                        visible: picker.status != 'ACCEPTED',
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // Handle accept action
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                foregroundColor: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 32),
-                                              ),
-                                              child: const Text('Accept'),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _buildDetailRow(
+                                            'Status', '${picker.status}'),
+                                        _buildDetailRow('Customer Name',
+                                            '${picker.customer?.name}'),
+                                        _buildDetailRow('Phone',
+                                            '${picker.customer?.phone}'),
+                                        _buildDetailRow(
+                                            'Location', '${picker.location}'),
+                                        _buildDetailRow('Coordinates',
+                                            '${picker.customerLat}, ${picker.customerLng}'),
+                                        _buildDetailRow('Requested At',
+                                            '${picker.createdAt}'),
+
+                                        const SizedBox(height: 16),
+                                        // Action Buttons
+
+                                        if (picker.status == 'ACCEPTED')
+                                          Center(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '${picker.status}',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.green,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                FilledButton(
+                                                  onPressed: () {
+                                                    AppNavigator.push(
+                                                      context,
+                                                      CustomerTrackingScreen(
+                                                        activePickerModel:
+                                                            picker,
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text(
+                                                      'Track Customer'),
+                                                ),
+                                              ],
                                             ),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // Handle reject action
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
-                                                foregroundColor: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 32),
+                                          ),
+                                        Visibility(
+                                          visible: picker.status != 'ACCEPTED',
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              FilledButton(
+                                                onPressed: () {
+                                                  // Handle accept action
+                                                  context
+                                                      .read<PickerCubit>()
+                                                      .acceptDeclinePicker(
+                                                        picker.id.toString(),
+                                                        true,
+                                                      );
+                                                },
+                                                style: FilledButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  foregroundColor: Colors.white,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 32),
+                                                ),
+                                                child: const Text('Accept'),
                                               ),
-                                              child: const Text('Reject'),
-                                            ),
-                                          ],
+                                              FilledButton(
+                                                onPressed: () {
+                                                  // Handle reject action
+                                                  context
+                                                      .read<PickerCubit>()
+                                                      .acceptDeclinePicker(
+                                                        picker.id.toString(),
+                                                        false,
+                                                      );
+                                                },
+                                                style: FilledButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  foregroundColor: Colors.white,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 32),
+                                                ),
+                                                child: const Text('Reject'),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                            .toList(),
-                        // Loading indicator
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                        // Loading indicator for pagination
                         if (isLoading)
                           const Center(
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: CircularProgressIndicator(),
+                              child: AppLoading(
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
                       ],

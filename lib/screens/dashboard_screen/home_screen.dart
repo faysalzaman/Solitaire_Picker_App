@@ -169,7 +169,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Recent Pickers History',
+                            'Customer\'s History',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -228,41 +228,35 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   // Sample data rows
                                   ...List.generate(
-                                      5,
-                                      (index) => TableRow(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: CircleAvatar(
-                                                  radius: 15,
-                                                  backgroundColor:
-                                                      Colors.grey[200],
-                                                  child: Image.asset(
-                                                    'assets/background.png',
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      return const Icon(
-                                                          Icons.person,
-                                                          size: 20);
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child:
-                                                    Text('Picker ${index + 1}'),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                    '2024-03-${20 - index}'),
-                                              ),
-                                            ],
-                                          )),
+                                    5,
+                                    (index) => TableRow(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircleAvatar(
+                                            radius: 15,
+                                            backgroundColor: Colors.grey[200],
+                                            child: Image.asset(
+                                              'assets/background.png',
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return const Icon(Icons.person,
+                                                    size: 20);
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text('Picker ${index + 1}'),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text('2024-03-${20 - index}'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

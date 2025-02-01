@@ -8,6 +8,7 @@ import 'package:solitaire_picker/cubit/journey/journey_state.dart';
 import 'package:solitaire_picker/cubit/store/store_cubit.dart';
 import 'package:solitaire_picker/cubit/store/store_state.dart';
 import 'package:solitaire_picker/model/active_picker_model.dart';
+import 'package:solitaire_picker/screens/dashboard/dashboard_screen.dart';
 import 'package:solitaire_picker/screens/pickers/shops/home_delivery_gate_delivery.dart';
 import 'package:solitaire_picker/screens/pickers/shops/shop_detail_screen.dart';
 import 'package:solitaire_picker/utils/app_navigator.dart';
@@ -114,6 +115,11 @@ class _SelectShopScreenState extends State<SelectShopScreen> {
                 AppNavigator.push(
                   context,
                   DeliveryOptionScreen(),
+                );
+              } else if (state is JourneyEndingError) {
+                AppNavigator.pushAndRemoveUntil(
+                  context,
+                  DashboardScreen(),
                 );
               }
             },
@@ -456,9 +462,55 @@ class _SelectShopScreenState extends State<SelectShopScreen> {
                                 width: double.infinity,
                                 child: FilledButton(
                                   onPressed: () {
-                                    context
-                                        .read<JourneyCubit>()
-                                        .endJourney(widget.journeyId);
+                                    showDialog<bool>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        backgroundColor: Colors.white,
+                                        title: const Text(
+                                          'Finish Shopping',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.purpleColor,
+                                          ),
+                                        ),
+                                        content: const Text(
+                                          'Are you sure you want to finish shopping?',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: AppColors.purpleColor,
+                                              ),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                              context
+                                                  .read<JourneyCubit>()
+                                                  .endJourney(widget.journeyId);
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              'Exit',
+                                              style: TextStyle(
+                                                color: AppColors.errorColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   },
                                   style: FilledButton.styleFrom(
                                     backgroundColor: AppColors.primaryColor,

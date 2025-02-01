@@ -550,7 +550,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               color: AppColors.purpleColor,
                             ),
                             const Text(
-                              'Customer Profile',
+                              'Picker Profile',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.purpleColor,

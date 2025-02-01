@@ -73,6 +73,7 @@ class JourneyCubit extends Cubit<JourneyState> {
     try {
       // check internet connection
       final isConnected = await NetworkConnectivity.instance.checkInternet();
+
       if (!isConnected) {
         emit(StoreExitError("No internet connection"));
         return;
@@ -82,7 +83,6 @@ class JourneyCubit extends Cubit<JourneyState> {
           await _journeyController.storeExit(journeyId, storeId);
       emit(StoreExit(storeVisits));
     } catch (e) {
-      print(e);
       emit(StoreExitError(e.toString()));
     }
   }

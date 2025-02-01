@@ -43,35 +43,69 @@ class HomeScreen extends StatelessWidget {
                         ),
 
                         // profile picture
-                        SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: GestureDetector(
-                            onTap: () {
-                              AppNavigator.push(
-                                context,
-                                const CustomerProfileScreen(),
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.network(
-                                imageUrl ?? '',
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
+                        Row(
+                          children: [
+                            // Put alert here for pendings
+                            Stack(
+                              children: [
+                                const Icon(Icons.notifications),
+                                Positioned(
+                                  right: 0,
+                                  child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Icon(Icons.person),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                      vertical: 2,
+                                    ),
+                                    child: const Text(
+                                      '1',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            SizedBox(
+                              height: 40,
+                              width: 40,
+                              child: GestureDetector(
+                                onTap: () {
+                                  AppNavigator.push(
+                                    context,
+                                    const CustomerProfileScreen(),
                                   );
                                 },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    imageUrl ?? '',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: const Icon(Icons.person),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),

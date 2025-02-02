@@ -44,7 +44,7 @@ class SelectServicesScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ServiceCard(
-                  title: 'Request Picker',
+                  title: 'Customer Request',
                   imagePath: 'assets/request_picker.png',
                   onTap: () {
                     AppNavigator.push(context, const AvailablePickersScreen());
@@ -52,7 +52,7 @@ class SelectServicesScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 20),
                 ServiceCard(
-                  title: 'Request Delivery',
+                  title: 'Customer Delivery',
                   imagePath: 'assets/request_delivery.png',
                   onTap: () {
                     AppNavigator.push(context, const SelectDeliveryToScreen());

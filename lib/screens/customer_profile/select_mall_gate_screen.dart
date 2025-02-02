@@ -48,7 +48,7 @@ class SelectMallGateScreen extends StatelessWidget {
                       title: 'Mall Gate ${index + 1}',
                       imagePath: 'assets/mall_gates.png',
                       onTap: () {
-                        // Handle Request Delivery tap
+                        // Handle Customer Delivery tap
                       },
                     ),
                   ),

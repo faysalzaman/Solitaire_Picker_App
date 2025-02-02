@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:solitaire_picker/cubit/auth/auth_cubit.dart';
+import 'package:solitaire_picker/cubit/history/history_cubit.dart';
 import 'package:solitaire_picker/cubit/journey/journey_cubit.dart';
 import 'package:solitaire_picker/cubit/picker_profile/profile_cubit.dart';
 import 'package:solitaire_picker/cubit/picker/picker_cubit.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => PickerCubit()),
         BlocProvider(create: (context) => StoreCubit()),
         BlocProvider(create: (context) => JourneyCubit()),
+        BlocProvider(create: (context) => HistoryCubit())
       ],
       child: MaterialApp(
         title: 'Solitaire Picker',

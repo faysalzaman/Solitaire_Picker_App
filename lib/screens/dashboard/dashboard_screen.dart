@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solitaire_picker/constants/constant.dart';
 import 'package:solitaire_picker/cubit/picker_profile/profile_cubit.dart';
 import 'package:solitaire_picker/screens/dashboard_screen/home_screen.dart';
+import 'package:solitaire_picker/screens/history/history_screen.dart';
 import 'package:solitaire_picker/screens/pickers/available_pickers_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -19,12 +20,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _pages = [
     HomeScreen(),
     const AvailablePickersScreen(),
-    Container(
-      child: const Center(child: Text('History')),
-    ),
-    Container(
-      child: const Center(child: Text('Settings')),
-    ),
+    const HistoryScreen(),
+    Container(child: const Center(child: Text('Settings'))),
   ];
 
   void _onItemTapped(int index) {

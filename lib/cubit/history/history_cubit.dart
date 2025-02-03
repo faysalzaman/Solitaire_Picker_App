@@ -12,7 +12,9 @@ class HistoryCubit extends Cubit<HistoryState> {
   final HistoryController _historyController = HistoryController();
 
   List<HistoryModel> history = [];
+  List<StoreVisitModel> storeVisits = [];
   bool hasReachedEnd = false;
+  bool hasReachedEndStoreVisits = false;
 
   Future<void> getHistory(
       String search, String page, String limit, String status) async {
@@ -59,8 +61,6 @@ class HistoryCubit extends Cubit<HistoryState> {
     }
   }
 
-  List<StoreVisitModel> storeVisits = [];
-
   Future<void> getStoreVisits(
     String journeyId,
     String search,
@@ -104,6 +104,8 @@ class HistoryCubit extends Cubit<HistoryState> {
           status,
         );
         storeVisits.addAll(result);
+        hasReachedEndStoreVisits =
+            result.isEmpty || result.length < int.parse(limit);
         emit(HistoryStoreVisitsLoadedMoreState(storeVisits));
       } else {
         emit(HistoryStoreVisitsErrorState('No internet connection'));

@@ -24,7 +24,6 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
   int currentPage = 1;
   final int itemsPerPage = 10;
   bool isLoadingMore = false;
-  bool hasReachedEnd = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -153,6 +152,17 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
       final shouldShowLoadMore =
           storeVisits.length == itemsPerPage * currentPage;
 
+      if (storeVisits.isEmpty) {
+        return const Center(
+          child: Text(
+            'He has not visited any store in this journey',
+            style: TextStyle(
+              color: AppColors.primaryColor,
+            ),
+          ),
+        );
+      }
+
       return Container(
         padding: const EdgeInsets.all(10.0),
         margin: const EdgeInsets.all(10.0),
@@ -168,6 +178,7 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
           ],
         ),
         child: ListView.builder(
+          shrinkWrap: true,
           padding: const EdgeInsets.all(12),
           itemCount: storeVisits.length + (shouldShowLoadMore ? 1 : 0),
           itemBuilder: (context, index) {
@@ -182,7 +193,14 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
       );
     }
 
-    return const Center(child: Text('No store visits available'));
+    return const Center(
+      child: Text(
+        'No store visits available',
+        style: TextStyle(
+          color: AppColors.primaryColor,
+        ),
+      ),
+    );
   }
 
   Widget _buildLoadMoreButton(
@@ -219,6 +237,7 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
 
   Widget _buildStoreVisitCard(StoreVisitModel storeVisit) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 3,
       shape: RoundedRectangleBorder(

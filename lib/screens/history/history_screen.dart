@@ -247,6 +247,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   );
                 },
                 child: Card(
+                  color: Colors.white,
                   margin: const EdgeInsets.only(bottom: 12),
                   elevation: 3,
                   shape: RoundedRectangleBorder(

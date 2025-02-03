@@ -21,7 +21,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     HomeScreen(),
     const AvailablePickersScreen(),
     const HistoryScreen(),
-    Container(child: const Center(child: Text('Settings'))),
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.construction,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Coming Soon!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Settings feature is under development',
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    ),
   ];
 
   void _onItemTapped(int index) {

@@ -73,52 +73,96 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<HistoryCubit, HistoryState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search history...',
-                            prefixIcon: const Icon(Icons.search,
-                                color: AppColors.primaryColor),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                  color: AppColors.primaryColor),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                  color: AppColors.primaryColor, width: 2),
-                            ),
-                          ),
-                          onChanged: (value) => _onSearchChanged(),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.refresh,
-                            color: AppColors.primaryColor),
-                        onPressed: _loadInitialData,
-                      ),
-                    ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Confirmation dialog to exit
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Are you sure you want to exit?',
+              style: TextStyle(
+                color: AppColors.purpleColor,
+                fontSize: 12,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: AppColors.purpleColor,
+                    fontSize: 12,
                   ),
                 ),
-                Expanded(
-                  child: _buildHistoryContent(state),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Exit',
+                  style: TextStyle(
+                    color: AppColors.purpleColor,
+                    fontSize: 12,
+                  ),
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          ),
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<HistoryCubit, HistoryState>(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search history...',
+                              prefixIcon: const Icon(Icons.search,
+                                  color: AppColors.primaryColor),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                    color: AppColors.primaryColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                    color: AppColors.primaryColor, width: 2),
+                              ),
+                            ),
+                            onChanged: (value) => _onSearchChanged(),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.refresh,
+                              color: AppColors.primaryColor),
+                          onPressed: _loadInitialData,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: _buildHistoryContent(state),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

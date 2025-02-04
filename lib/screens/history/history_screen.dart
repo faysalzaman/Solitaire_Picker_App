@@ -128,7 +128,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (state is HistoryLoadingState) {
       return Container(
         height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/background.png'),
@@ -136,10 +135,51 @@ class _HistoryScreenState extends State<HistoryScreen> {
             opacity: 0.8,
           ),
         ),
-        child: const Center(
-          child: AppLoading(
-            color: AppColors.primaryColor,
-            size: 20,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          margin: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: 5, // Show 5 placeholder items
+            itemBuilder: (context, index) {
+              return Card(
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 12),
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ...List.generate(5, (index) => _buildPlaceholderRow()),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
@@ -336,6 +376,33 @@ class _HistoryScreenState extends State<HistoryScreen> {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderRow() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          Container(
+            width: 80,
+            height: 12,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 120,
+            height: 12,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(4),
             ),
           ),
         ],

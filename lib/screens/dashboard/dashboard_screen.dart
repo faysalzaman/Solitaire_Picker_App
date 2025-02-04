@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:solitaire_picker/constants/constant.dart';
 import 'package:solitaire_picker/cubit/picker_profile/profile_cubit.dart';
-import 'package:solitaire_picker/screens/dashboard_screen/home_screen.dart';
+import 'package:solitaire_picker/screens/customer_profile/customer_profile_screen.dart';
 import 'package:solitaire_picker/screens/history/history_screen.dart';
 import 'package:solitaire_picker/screens/pickers/available_pickers_screen.dart';
 
@@ -18,36 +18,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // List of pages/widgets to display
   final List<Widget> _pages = [
-    HomeScreen(),
+    const CustomerProfileScreen(),
     const AvailablePickersScreen(),
     const HistoryScreen(),
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.construction,
-            size: 64,
-            color: Colors.grey,
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Coming Soon!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Settings feature is under development',
-            style: TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    ),
+    // Center(
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: [
+    //       const Icon(
+    //         Icons.construction,
+    //         size: 64,
+    //         color: Colors.grey,
+    //       ),
+    //       const SizedBox(height: 16),
+    //       const Text(
+    //         'Coming Soon!',
+    //         style: TextStyle(
+    //           fontSize: 24,
+    //           fontWeight: FontWeight.bold,
+    //         ),
+    //       ),
+    //       const SizedBox(height: 8),
+    //       const Text(
+    //         'Settings feature is under development',
+    //         style: TextStyle(
+    //           color: Colors.grey,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // ),
   ];
 
   void _onItemTapped(int index) {
@@ -112,11 +112,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            label: 'Dashboard',
+            icon: Icon(Icons.person_outline),
+            label: 'Profile',
             backgroundColor: AppColors.primaryColor,
             activeIcon: Icon(
-              Icons.dashboard,
+              Icons.person,
               size: 30,
             ),
           ),
@@ -138,15 +138,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               size: 30,
             ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
-            backgroundColor: AppColors.primaryColor,
-            activeIcon: Icon(
-              Icons.settings,
-              size: 30,
-            ),
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.settings_outlined),
+          //   label: 'Settings',
+          //   backgroundColor: AppColors.primaryColor,
+          //   activeIcon: Icon(
+          //     Icons.settings,
+          //     size: 30,
+          //   ),
+          // ),
         ],
       ),
     );

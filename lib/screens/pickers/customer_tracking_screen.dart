@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, unused_element
 
 import 'dart:async';
 
@@ -48,8 +48,14 @@ class _CustomerTrackingScreenState extends State<CustomerTrackingScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeMap();
-    _startLocationUpdates();
+    _checkPermissions();
+  }
+
+  Future<void> _checkPermissions() async {
+    final hasPermission = await _handleLocationPermission(context);
+    if (hasPermission) {
+      _initializeMap();
+    }
   }
 
   Future<void> _initializeMap() async {
@@ -460,13 +466,7 @@ class _CustomerTrackingScreenState extends State<CustomerTrackingScreen> {
                                       journeyId: state.journey.id ?? "",
                                     ),
                                   );
-                                } else if (state is JourneyError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.message),
-                                    ),
-                                  );
-                                }
+                                } else if (state is JourneyError) {}
                               },
                               builder: (context, state) {
                                 return Align(
@@ -521,5 +521,49 @@ class _CustomerTrackingScreenState extends State<CustomerTrackingScreen> {
                   ],
                 ),
     );
+  }
+
+  Future<bool> _handleLocationPermission(BuildContext context) async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Location services are disabled. Please enable the services'),
+          ),
+        );
+      }
+      return false;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Location permissions are denied'),
+            ),
+          );
+        }
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions.'),
+          ),
+        );
+      }
+      return false;
+    }
+
+    return true;
   }
 }

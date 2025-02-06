@@ -234,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen>
   void _showWarningMessage(String message) {
     ErrorDialog.show(
       context,
-      title: message,
+      title: message.replaceAll('Exception: ', ''),
       buttonText: 'OK',
     );
     _restartBlink();

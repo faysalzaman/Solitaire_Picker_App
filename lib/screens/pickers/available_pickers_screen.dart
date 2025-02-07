@@ -326,8 +326,9 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
                                                         CustomerTrackingScreen(
                                                           activePickerModel:
                                                               picker,
-                                                          customerId:
-                                                              picker.id ?? "",
+                                                          customerId: picker
+                                                                  .customerId ??
+                                                              "",
                                                         ),
                                                       );
                                                     },

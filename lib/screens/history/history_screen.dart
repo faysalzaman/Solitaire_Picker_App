@@ -395,8 +395,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (label == 'Start Time:' || label == 'End Time:') {
       try {
         final dateTime = DateTime.parse(value);
+        final hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+        final amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
+        final hourDisplay =
+            hour == 0 ? 12 : hour; // Convert 0 to 12 for midnight
         displayValue =
-            '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+            '${dateTime.day}/${dateTime.month}/${dateTime.year} ${hourDisplay}:${dateTime.minute.toString().padLeft(2, '0')} $amPm';
       } catch (e) {
         // Keep original value if parsing fails
         displayValue = value;

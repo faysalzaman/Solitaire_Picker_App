@@ -31,7 +31,7 @@ class _AvailablePickersScreenState extends State<AvailablePickersScreen> {
     context.read<PickerCubit>().getPickers(page, limit);
     _scrollController.addListener(_onScroll);
 
-    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 60), (timer) {
       if (mounted) {
         setState(() {
           page = 1;

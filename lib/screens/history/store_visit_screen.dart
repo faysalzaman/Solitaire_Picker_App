@@ -7,6 +7,7 @@ import 'package:solitaire_picker/cubit/history/history_cubit.dart';
 import 'package:solitaire_picker/cubit/history/history_state.dart';
 import 'package:solitaire_picker/model/store_visit_model.dart';
 import 'package:solitaire_picker/utils/app_loading.dart';
+import 'package:intl/intl.dart';
 
 class StoreVistScreen extends StatefulWidget {
   const StoreVistScreen({
@@ -262,16 +263,15 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
   Widget _buildInfoRow(String label, String value) {
     String displayValue = value;
 
+    // Convert UTC time to local & format it
     if (label == 'Entry Time:' || label == 'Exit Time:') {
       try {
-        final dateTime = DateTime.parse(value).add(const Duration(hours: 5));
-        final hour = dateTime.hour % 12;
-        final amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
-        final hourString = (hour == 0 ? 12 : hour).toString().padLeft(2, '0');
-        displayValue =
-            '$hourString:${dateTime.minute.toString().padLeft(2, '0')} $amPm';
+        DateTime dateTime =
+            DateTime.parse(value).toLocal(); // Convert UTC to Local
+        displayValue = DateFormat("dd/MM/yyyy hh:mm a")
+            .format(dateTime); // Format to 12-hour
       } catch (e) {
-        displayValue = value;
+        displayValue = value; // Keep original value if parsing fails
       }
     }
 

@@ -264,10 +264,10 @@ class _StoreVistScreenState extends State<StoreVistScreen> {
 
     if (label == 'Entry Time:' || label == 'Exit Time:') {
       try {
-        final dateTime = DateTime.parse(value);
-        final hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+        final dateTime = DateTime.parse(value).add(const Duration(hours: 5));
+        final hour = dateTime.hour % 12;
         final amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
-        final hourString = hour == 0 ? '12' : hour.toString();
+        final hourString = (hour == 0 ? 12 : hour).toString().padLeft(2, '0');
         displayValue =
             '$hourString:${dateTime.minute.toString().padLeft(2, '0')} $amPm';
       } catch (e) {

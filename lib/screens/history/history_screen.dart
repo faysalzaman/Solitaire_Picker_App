@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:solitaire_picker/constants/constant.dart';
 import 'package:solitaire_picker/cubit/history/history_cubit.dart';
 import 'package:solitaire_picker/cubit/history/history_state.dart';
@@ -391,19 +392,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _buildInfoRow(String label, String value) {
     String displayValue = value;
 
-    // Format datetime strings for start and end times
+    // Convert UTC time to local & format it
     if (label == 'Start Time:' || label == 'End Time:') {
       try {
-        final dateTime = DateTime.parse(value);
-        final hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
-        final amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
-        final hourDisplay =
-            hour == 0 ? 12 : hour; // Convert 0 to 12 for midnight
-        displayValue =
-            '${dateTime.day}/${dateTime.month}/${dateTime.year} ${hourDisplay}:${dateTime.minute.toString().padLeft(2, '0')} $amPm';
+        DateTime dateTime =
+            DateTime.parse(value).toLocal(); // Convert UTC to Local
+        displayValue = DateFormat("dd/MM/yyyy hh:mm a")
+            .format(dateTime); // Format to 12-hour
       } catch (e) {
-        // Keep original value if parsing fails
-        displayValue = value;
+        displayValue = value; // Keep original value if parsing fails
       }
     }
 

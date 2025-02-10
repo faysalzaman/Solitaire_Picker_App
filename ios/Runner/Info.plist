@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location to show your position on Google Maps and provide accurate navigation.</string>
+	<string>This app needs access to location when open to show your current location on the map.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs background location access to provide navigation features even when the app is in background.</string>
+	<string>This app needs access to location when in the background to show your current location on the map.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs location access to show your position on Google Maps and provide navigation features.</string>
+	<string>This app needs access to location when open and in the background to show your current location on the map.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -62,7 +62,5 @@
 	</array>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>GMSApiKey</key>
-	<string>AIzaSyBcdPY1bQKSv0C1lQq-nYb3kBcjANsY3Fk</string>
 </dict>
 </plist>

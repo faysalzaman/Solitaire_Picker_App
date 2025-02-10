@@ -9,7 +9,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:solitaire_picker/cubit/journey/journey_cubit.dart';
 import 'package:solitaire_picker/cubit/journey/journey_state.dart';
 import 'package:solitaire_picker/model/active_picker_model.dart';
@@ -173,7 +172,7 @@ class _CustomerTrackingScreenState extends State<CustomerTrackingScreen> {
   Future<void> _drawRoute() async {
     if (currentPosition == null) return;
 
-    final String? googleAPIKey = dotenv.env['GOOGLE_MAPS_API_KEY'];
+    final String? googleAPIKey = 'AIzaSyBcdPY1bQKSv0C1lQq-nYb3kBcjANsY3Fk';
     if (googleAPIKey == null) {
       debugPrint('Google Maps API key is not configured');
       return;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:solitaire_picker/cubit/auth/auth_cubit.dart';
 import 'package:solitaire_picker/cubit/history/history_cubit.dart';
 import 'package:solitaire_picker/cubit/journey/journey_cubit.dart';
@@ -12,7 +11,6 @@ import 'package:solitaire_picker/utils/app_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
   await AppPreferences.init();
   runApp(const MyApp());
 }
